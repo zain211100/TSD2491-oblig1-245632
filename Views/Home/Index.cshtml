@@ -11,12 +11,13 @@
         "🦬","🦬"
     };
 
-    List<string> shuffledAnimals = new List<string>();
-
     Random random = new Random();
-    shuffledAnimals = animalEmoji
+    List<string> shuffledAnimals = animalEmoji
         .OrderBy(item => random.Next())
         .ToList();
+
+    string lastAnimalFound = string.Empty;
+    string lastDescription = string.Empty;
 }
 
 <!DOCTYPE html>
@@ -56,16 +57,45 @@
 
     <div class="container">
         <div class="row">
-            @foreach (var animal in shuffledAnimals)
+            @for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
             {
+                var animal = shuffledAnimals[animalNumber];
+                var uniqueDescription = $"Button #{animalNumber}";
                 <div class="col-3">
-                    <button type="button" class="btn btn-outline-dark">
-                        <h1>@animal</h1>
+                    <button onclick="ButtonClick('@animal', '@uniqueDescription')"
+                            type="button" class="btn btn-outline-dark">
+                        @animal
                     </button>
                 </div>
             }
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function ButtonClick(animal, animalDescription) {
+            if (window.lastAnimalFound === '') {
+                // First selection of the pair. Remember it.
+                window.lastAnimalFound = animal;
+                window.lastDescription = animalDescription;
+            }
+            else if ((window.lastAnimalFound === animal) && (animalDescription !== window.lastDescription)) {
+                window.lastAnimalFound = '';
+                window.lastDescription = '';
+
+                $('button:contains("' + animal + '")').parent().hide();
+
+                // Check if all buttons are hidden to reset the game
+                if ($('.col-3:visible').length === 0) {
+                    location.reload(); // Reload the page to reset the game
+                }
+            }
+            else {
+                window.lastAnimalFound = '';
+                window.lastDescription = '';
+            }
+        }
+    </script>
 
 </body>
 </html>
