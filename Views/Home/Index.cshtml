@@ -1,20 +1,50 @@
 ﻿@{
     List<string> animalEmoji = new List<string>()
     {
-        "🦍","🦍",
-        "🐴","🐴",
-        "🐷","🐷",
-        "🦊","🦊",
-        "🐱","🐱",
-        "🐯","🐯",
-        "🐸","🐸",
-        "🦬","🦬"
+        "🦍", "🦍",
+        "🐴", "🐴",
+        "🐷", "🐷",
+        "🦊", "🦊",
+        "🐱", "🐱",
+        "🐯", "🐯",
+        "🐸", "🐸",
+        "🦬", "🦬"
+    };
+
+    List<string> foodEmoji = new List<string>()
+    {
+        "🍎", "🍎",
+        "🍉", "🍉",
+        "🍔", "🍔",
+        "🍕", "🍕",
+        "🍩", "🍩",
+        "🍓", "🍓",
+        "🍇", "🍇",
+        "🥦", "🥦",
+        "🥑", "🥑",
+        "🍄", "🍄",
+        "🥖", "🥖"
+    };
+
+    List<string> drinkEmoji = new List<string>()
+    {
+        "🍺", "🍺",
+        "🍷", "🍷",
+        "🍹", "🍹",
+        "🍵", "🍵",
+        "🥤", "🥤",
+        "🍸", "🍸",
+        "🍼", "🍼",
+        "🥛", "🥛",
+        "🍶", "🍶",
+        "🍻", "🍻",
+        "🧉", "🧉"
     };
 
     Random random = new Random();
-    List<string> shuffledAnimals = animalEmoji
-        .OrderBy(item => random.Next())
-        .ToList();
+    List<string> shuffledAnimals = animalEmoji.OrderBy(item => random.Next()).ToList();
+    List<string> shuffledFood = foodEmoji.OrderBy(item => random.Next()).ToList();
+    List<string> shuffledDrink = drinkEmoji.OrderBy(item => random.Next()).ToList();
 
     string lastAnimalFound = string.Empty;
     string lastDescription = string.Empty;
@@ -53,14 +83,22 @@
 
     <div class="text-center">
         <h1>TSD2491 – Oblig1</h1>
+        <label id="gameState">Press an icon to start</label>
     </div>
 
+    <div>
+        <input type="text" id="username" placeholder="Enter your name" />
+        <button onclick="RegisterUser()">Register</button>
+    </div>
+    <ol id="userList"></ol>
+
     <div class="container">
+        <h2>Animals</h2>
         <div class="row">
             @for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
             {
                 var animal = shuffledAnimals[animalNumber];
-                var uniqueDescription = $"Button #{animalNumber}";
+                var uniqueDescription = $"Animal #{animalNumber}";
                 <div class="col-3">
                     <button onclick="ButtonClick('@animal', '@uniqueDescription')"
                             type="button" class="btn btn-outline-dark">
@@ -69,13 +107,54 @@
                 </div>
             }
         </div>
+
+        <h2>Food</h2>
+        <div class="row">
+            @for (var foodNumber = 0; foodNumber < shuffledFood.Count; foodNumber++)
+            {
+                var food = shuffledFood[foodNumber];
+                var uniqueDescription = $"Food #{foodNumber}";
+                <div class="col-3">
+                    <button onclick="ButtonClick('@food', '@uniqueDescription')"
+                            type="button" class="btn btn-outline-dark">
+                        @food
+                    </button>
+                </div>
+            }
+        </div>
+
+        <h2>Drinks</h2>
+        <div class="row">
+            @for (var drinkNumber = 0; drinkNumber < shuffledDrink.Count; drinkNumber++)
+            {
+                var drink = shuffledDrink[drinkNumber];
+                var uniqueDescription = $"Drink #{drinkNumber}";
+                <div class="col-3">
+                    <button onclick="ButtonClick('@drink', '@uniqueDescription')"
+                            type="button" class="btn btn-outline-dark">
+                        @drink
+                    </button>
+                </div>
+            }
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        function RegisterUser() {
+            var username = document.getElementById('username').value;
+            if (username) {
+                var userList = document.getElementById('userList');
+                var newUser = document.createElement('li');
+                newUser.innerText = username;
+                userList.appendChild(newUser);
+            }
+        }
+
         function ButtonClick(animal, animalDescription) {
+            document.getElementById('gameState').innerText = 'Game Running';
+
             if (window.lastAnimalFound === '') {
-                // First selection of the pair. Remember it.
                 window.lastAnimalFound = animal;
                 window.lastDescription = animalDescription;
             }
@@ -85,9 +164,9 @@
 
                 $('button:contains("' + animal + '")').parent().hide();
 
-                // Check if all buttons are hidden to reset the game
                 if ($('.col-3:visible').length === 0) {
-                    location.reload(); // Reload the page to reset the game
+                    document.getElementById('gameState').innerText = 'Game Complete';
+                    location.reload();
                 }
             }
             else {
@@ -96,6 +175,5 @@
             }
         }
     </script>
-
 </body>
 </html>
