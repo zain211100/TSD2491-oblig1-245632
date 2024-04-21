@@ -48,6 +48,8 @@
 
     string lastAnimalFound = string.Empty;
     string lastDescription = string.Empty;
+
+    Dictionary<string, int> userScores = new Dictionary<string, int>();
 }
 
 <!DOCTYPE html>
@@ -144,9 +146,12 @@
         function RegisterUser() {
             var username = document.getElementById('username').value;
             if (username) {
+                if (!window.userScores[username]) {
+                    window.userScores[username] = 0;
+                }
                 var userList = document.getElementById('userList');
                 var newUser = document.createElement('li');
-                newUser.innerText = username;
+                newUser.innerText = `${username} - ${window.userScores[username]} games played`;
                 userList.appendChild(newUser);
             }
         }
@@ -163,6 +168,7 @@
                 window.lastDescription = '';
 
                 $('button:contains("' + animal + '")').parent().hide();
+                window.userScores[document.getElementById('username').value]++;
 
                 if ($('.col-3:visible').length === 0) {
                     document.getElementById('gameState').innerText = 'Game Complete';
